@@ -161,9 +161,11 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)!=null) {
+        if(Utility.isConnected(this) && AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)!=null) {
             CrossFragment dFragment = new CrossFragment();
             dFragment.show(getSupportFragmentManager(), "");
+        }else{
+            this.finish();
         }
     }
 }
