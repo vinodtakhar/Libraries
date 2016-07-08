@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item type="string" name="interstitial_id"/>
+    <item type="integer" name="activity_orientation"/>
     <item type="id" name="adView"/>
 </resources>

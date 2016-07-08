@@ -3,6 +3,7 @@ package com.phoneutils.crosspromotion;
 import android.app.AlarmManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class BaseActivity extends ActionBarActivity {
     private InterstitialAd mInterstitialAd;
     private ProgressDialog progressDialog;
     private AdView mAdView;
+    private boolean showCrossAds = false;
 
     public BaseActivity() {
     }
@@ -36,6 +38,8 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.setRequestedOrientation(getResources().getInteger(R.integer.activity_orientation));
 
         Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
 
@@ -56,6 +60,10 @@ public class BaseActivity extends ActionBarActivity {
         });
 
         requestNewInterstitial();
+    }
+
+    protected void setShowCrossAds(boolean showCrossAds){
+        this.showCrossAds = showCrossAds;
     }
 
     public void onInterstitialLoaded(){}
@@ -161,7 +169,7 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(Utility.isConnected(this) && AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)!=null) {
+        if(showCrossAds && Utility.isConnected(this) && AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)!=null) {
             CrossFragment dFragment = new CrossFragment();
             dFragment.show(getSupportFragmentManager(), "");
         }else{

@@ -26,10 +26,11 @@ android {
 }
 
 dependencies {
-//    compile fileTree(include: ['*.jar'], dir: 'libs')
-//    compile 'com.phoneutils.crosspromotion:crosspromotion:0.0.1'
-//    compile 'com.github.vinodtakhar:Libraries:1.0'
-    compile 'com.phoneutils.libs:crosspromotion:1.0.1'
+    //    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //    compile 'com.phoneutils.crosspromotion:crosspromotion:0.0.1'
+    //    compile 'com.github.vinodtakhar:Libraries:1.0'
+    //    compile 'com.phoneutils.libs:crosspromotion:1.0.1'
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.inthecheesefactory.thecheeselibrary:fb-like:0.9.3'
+    compile project(':crosspromotion')
 }

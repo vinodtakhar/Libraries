@@ -12,6 +12,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setShowCrossAds(true);
         startLoader("http://theorycrosspromotion.appspot.com/getapps","main");
     }
 }
