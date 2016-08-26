@@ -15,3 +15,17 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+    **[] $VALUES;
+    public *;
+}
+
+-keepattributes *Annotation*
+-keepattributes Signature
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }
+-dontwarn sun.misc.Unsafe.**
+-dontwarn com.google.gson.**
+
+-keep class com.phoneutils.crosspromotion.** { *; }

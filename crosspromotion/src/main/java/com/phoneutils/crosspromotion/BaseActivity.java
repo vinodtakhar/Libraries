@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -22,9 +24,10 @@ import com.google.android.gms.ads.InterstitialAd;
 /**
  * Created by vinodtakhar on 28/4/16.
  */
-public class BaseActivity extends ActionBarActivity {
+public class BaseActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
+    private static final String TAG = BaseActivity.class.getName();
     private String permissionBeingAsked;
     private int clientRequestCode;
     private InterstitialAd mInterstitialAd;
@@ -78,6 +81,7 @@ public class BaseActivity extends ActionBarActivity {
         mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
+                .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
                 .addTestDevice("75BCE6A3D40329AA644B7DA2D7241198").build();
         mAdView.loadAd(adRequest);
     }
@@ -85,6 +89,7 @@ public class BaseActivity extends ActionBarActivity {
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
+                .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
                 .addTestDevice("75BCE6A3D40329AA644B7DA2D7241198")
                 .build();
 
@@ -156,8 +161,11 @@ public class BaseActivity extends ActionBarActivity {
         AppPreferences.setSharedPreference(this,AppPreferences.KEY_CATEGORY,category);
 
         if(Utility.isConnected(this)){
-            if(AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null ||
-                    (AppPreferences.getLongSharedPreference(this,AppPreferences.KEY_LAST_SYNC_TIME,0l) + AlarmManager.INTERVAL_DAY*7)<= System.currentTimeMillis()){
+            boolean isJsonNull = AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null;
+            boolean isItOneWeek = (AppPreferences.getLongSharedPreference(this,AppPreferences.KEY_LAST_SYNC_TIME,0l) + (AlarmManager.INTERVAL_DAY * 7))<= System.currentTimeMillis();
+
+            if(isJsonNull ||
+                    isItOneWeek){
                 AppsLoader.load(this);
             }
         }
@@ -169,7 +177,10 @@ public class BaseActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if(showCrossAds && Utility.isConnected(this) && AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)!=null) {
+
+        boolean isJsonNull = AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null;
+
+        if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
             CrossFragment dFragment = new CrossFragment();
             dFragment.show(getSupportFragmentManager(), "");
         }else{

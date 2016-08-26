@@ -27,8 +27,15 @@ public class AppsLoader{
     public AppsLoader() {
     }
 
+    public static Thread thread;
+
     public static void load(final Context context) {
-        new Thread(){
+        if(thread!=null){
+            Log.e(TAG,"Already loading...");
+            return;
+        }
+
+        thread = new Thread(){
             public void run(){
                 try {
                     String json = getApps(context);
@@ -39,8 +46,11 @@ public class AppsLoader{
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                thread = null;
             }
-        }.start();
+        };
+        thread.start();
     }
 
     private static String getApps(Context context) throws IOException {

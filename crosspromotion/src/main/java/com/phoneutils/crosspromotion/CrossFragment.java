@@ -2,6 +2,7 @@ package com.phoneutils.crosspromotion;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,7 @@ import java.util.ArrayList;
  */
 public class CrossFragment extends DialogFragment {
 
+    private static final String TAG = CrossFragment.class.getName();
     private Button btnExit;
     private RecyclerView recyclerView;
     private AppsAdapter appsAdapter;
@@ -55,7 +58,7 @@ public class CrossFragment extends DialogFragment {
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
 
 //        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        int column = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE?3:2;
+        int column = getResources().getInteger(R.integer.activity_orientation) == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE?3:2;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),column));
 
@@ -64,6 +67,7 @@ public class CrossFragment extends DialogFragment {
         ResponseModel responseModel = new Gson().fromJson(AppPreferences.getSharedPreference(getContext(),AppPreferences.KEY_APPS_JSON),ResponseModel.class);
 
         if(responseModel==null || responseModel.getApps()==null || responseModel.getApps().size()==0){
+            Log.e(TAG,"Apps are null");
             AppPreferences.setLongSharedPreference(getContext(),AppPreferences.KEY_LAST_SYNC_TIME,0l);
             getActivity().finish();
         }else{
