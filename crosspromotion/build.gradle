@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/vinodtakhar/Libraries'
     gitUrl = 'https://github.com/vinodtakhar/Libraries.git'
 
-    libraryVersion = '1.0.7'
+    libraryVersion = '1.0.9'
 
     developerId = 'vinodtakhar'
     developerName = 'Vinod Takhar'
@@ -55,3 +55,8 @@ dependencies {
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+
+//to upload
+//gradlew install
+//gradlew bintrayUpload
+//link: https://inthecheesefactory.com/blog/how-to-upload-library-to-jcenter-maven-central-as-dependency/en

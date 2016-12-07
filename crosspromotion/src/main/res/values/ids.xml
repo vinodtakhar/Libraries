@@ -3,4 +3,5 @@
     <item type="string" name="interstitial_id"/>
     <item type="integer" name="activity_orientation"/>
     <item type="id" name="adView"/>
+    <item type="drawable" name="logo"/>
 </resources>
