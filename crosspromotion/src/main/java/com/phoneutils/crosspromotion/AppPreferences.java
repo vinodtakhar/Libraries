@@ -17,6 +17,7 @@ public class AppPreferences {
     public static final String KEY_LAST_SYNC_TIME = "key_last_sync_time";
     public static final String KEY_URL = "key_server_url";
     public static final java.lang.String KEY_CATEGORY = "key_category_key";
+    public static final java.lang.String KEY_POLICY_STATUS = "key_status_policy";
 
 
     public static void setSharedPreference(Context ctx, String Key, String Value) {

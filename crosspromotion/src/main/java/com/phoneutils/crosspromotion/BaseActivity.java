@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -34,6 +35,7 @@ public class BaseActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private AdView mAdView;
     private boolean showCrossAds = false;
+    private boolean adOnBack = false;
 
     public BaseActivity() {
     }
@@ -75,6 +77,15 @@ public class BaseActivity extends AppCompatActivity {
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         }
+    }
+
+    protected void showDelayedInterstitial(int delayMillis,View view){
+       view.postDelayed(new Runnable() {
+           @Override
+           public void run() {
+               showInterstitial();
+           }
+       },delayMillis);
     }
 
     protected void initBanner() {
@@ -175,6 +186,10 @@ public class BaseActivity extends AppCompatActivity {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
+
+    public void showAdOnBack(boolean adOnBack){
+        this.adOnBack = adOnBack;
+    }
     @Override
     public void onBackPressed() {
 
@@ -183,6 +198,9 @@ public class BaseActivity extends AppCompatActivity {
         if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
             CrossFragment dFragment = new CrossFragment();
             dFragment.show(getSupportFragmentManager(), "");
+        }else if(adOnBack){
+            adOnBack = false;
+            showInterstitial();
         }else{
             this.finish();
         }

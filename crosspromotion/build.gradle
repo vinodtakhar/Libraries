@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/vinodtakhar/Libraries'
     gitUrl = 'https://github.com/vinodtakhar/Libraries.git'
 
-    libraryVersion = '1.0.9'
+    libraryVersion = '1.1.4'
 
     developerId = 'vinodtakhar'
     developerName = 'Vinod Takhar'

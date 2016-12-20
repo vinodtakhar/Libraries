@@ -34,6 +34,18 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="normalText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="smallText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="titleText.White" parent="titleText">
         <item name="android:textColor">@android:color/white</item>
     </style>
