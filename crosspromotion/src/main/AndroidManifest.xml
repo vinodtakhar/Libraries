@@ -2,7 +2,8 @@
     package="com.phoneutils.crosspromotion">
 
     <application>
-        <activity android:name=".PolicyActivity"/>
+        <activity android:name=".PolicyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
     </application>
 
 </manifest>

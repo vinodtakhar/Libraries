@@ -46,6 +46,7 @@ public class BaseActivity extends AppCompatActivity {
 
         this.setRequestedOrientation(getResources().getInteger(R.integer.activity_orientation));
 
+
         Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
 
         mInterstitialAd = new InterstitialAd(this);

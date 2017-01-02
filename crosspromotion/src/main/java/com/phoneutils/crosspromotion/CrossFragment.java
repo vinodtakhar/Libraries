@@ -3,7 +3,6 @@ package com.phoneutils.crosspromotion;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -58,7 +57,7 @@ public class CrossFragment extends DialogFragment {
         recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
 
 //        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        int column = getResources().getInteger(R.integer.activity_orientation) == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE?3:2;
+        int column = getResources().getInteger(R.integer.activity_orientation)==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE? 3:2;
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(),column));
 
