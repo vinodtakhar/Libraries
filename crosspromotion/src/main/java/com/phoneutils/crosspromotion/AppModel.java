@@ -65,6 +65,4 @@ public class AppModel {
 		builder.append("]");
 		return builder.toString();
 	}
-	
-	
 }
