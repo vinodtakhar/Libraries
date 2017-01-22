@@ -3,16 +3,16 @@ package com.phoneutils.crosspromotion;
 import android.app.AlarmManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -36,6 +36,8 @@ public class BaseActivity extends AppCompatActivity {
     private AdView mAdView;
     private boolean showCrossAds = false;
     private boolean adOnBack = false;
+    private int column;
+    private boolean showCrossActivity = false;
 
     public BaseActivity() {
     }
@@ -68,25 +70,49 @@ public class BaseActivity extends AppCompatActivity {
         requestNewInterstitial();
     }
 
+    public void setShowCrossActivity(boolean showCrossActivity) {
+        this.showCrossActivity = showCrossActivity;
+    }
+
     protected void setShowCrossAds(boolean showCrossAds){
         this.showCrossAds = showCrossAds;
+        column = getResources().getInteger(R.integer.activity_orientation)==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE? 3:2;
+    }
+
+    protected void setShowCrossAds(boolean showCrossAds,int column){
+        this.showCrossAds = showCrossAds;
+        this.column = column;
     }
 
     public void onInterstitialLoaded(){}
 
-    protected void showInterstitial(){
+    private void showFullAd(){
         if (mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         }
     }
 
-    protected void showDelayedInterstitial(int delayMillis,View view){
-       view.postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               showInterstitial();
-           }
-       },delayMillis);
+    protected void showInterstitial(){
+        showInterstitial("Loading...",1500);
+    }
+
+    protected void showInterstitial(String message){
+        showInterstitial(message,1500);
+    }
+
+    protected void showInterstitial(int delayMillis){
+        showInterstitial("Loading...",delayMillis);
+    }
+
+    protected void showInterstitial(String message,int delayMillis){
+        showProgress(message);
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hideProgress();
+                showFullAd();
+            }
+        },delayMillis);
     }
 
     protected void initBanner() {
@@ -196,12 +222,18 @@ public class BaseActivity extends AppCompatActivity {
 
         boolean isJsonNull = AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null;
 
-        if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
-            CrossFragment dFragment = new CrossFragment();
-            dFragment.show(getSupportFragmentManager(), "");
-        }else if(adOnBack){
+        if(adOnBack){
             adOnBack = false;
             showInterstitial();
+        }else if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
+            if(showCrossActivity){
+                startActivity(new Intent(this,CrossAdActivity.class));
+                this.finish();
+            }else {
+                CrossFragment dFragment = new CrossFragment();
+                dFragment.setColumn(column);
+                dFragment.show(getSupportFragmentManager(), "");
+            }
         }else{
             this.finish();
         }

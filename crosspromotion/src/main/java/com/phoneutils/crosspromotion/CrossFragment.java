@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,11 +34,14 @@ public class CrossFragment extends DialogFragment {
 
     private static final String TAG = CrossFragment.class.getName();
     private Button btnExit;
-    private RecyclerView recyclerView;
-    private AppsAdapter appsAdapter;
-    private ArrayList<AppModel> apps = null;
+    private int column;
+    private LinearLayout layout;
 
     public CrossFragment() {
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
     }
 
     @Override
@@ -46,6 +51,7 @@ public class CrossFragment extends DialogFragment {
                 false);
 
         btnExit = (Button)rootView.findViewById(R.id.btnExit);
+        layout = (LinearLayout)rootView.findViewById(R.id.layout);
 
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,26 +60,15 @@ public class CrossFragment extends DialogFragment {
             }
         });
 
-        recyclerView = (RecyclerView)rootView.findViewById(R.id.recyclerView);
+        CrossAdView crossAdView = new CrossAdView(getContext());
+        crossAdView.setColumn(column);
+        crossAdView.setOrientation(LinearLayoutManager.VERTICAL);
 
-//        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
-        int column = getResources().getInteger(R.integer.activity_orientation)==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE? 3:2;
-
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(),column));
-
-        appsAdapter = new AppsAdapter();
-
-        ResponseModel responseModel = new Gson().fromJson(AppPreferences.getSharedPreference(getContext(),AppPreferences.KEY_APPS_JSON),ResponseModel.class);
-
-        if(responseModel==null || responseModel.getApps()==null || responseModel.getApps().size()==0){
-            Log.e(TAG,"Apps are null");
-            AppPreferences.setLongSharedPreference(getContext(),AppPreferences.KEY_LAST_SYNC_TIME,0l);
+        if(!crossAdView.hasCrossAds()){
             getActivity().finish();
         }else{
-            apps = responseModel.getApps();
+            layout.addView(crossAdView.getView());
         }
-
-        recyclerView.setAdapter(appsAdapter);
 
         return rootView;
     }
@@ -93,57 +88,5 @@ public class CrossFragment extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
-    }
-
-    private void launchApp(String appPackageName){
-
-        try {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-        } catch (Exception anfe) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-        }
-    }
-
-    private class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>{
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.app_item,null));
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.tvTitle.setText(apps.get(position).getTitle());
-            holder.tvDescription.setText(apps.get(position).getDescription());
-            Glide.with(getContext()).load(apps.get(position).getLogo()).override(600,200).into(holder.ivLogo);
-            holder.packageName = apps.get(position).getPackageName();
-        }
-
-        @Override
-        public int getItemCount() {
-            return apps==null?0:apps.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-            TextView tvTitle;
-            TextView tvDescription;
-            ImageView ivLogo;
-            String packageName;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-
-                tvTitle = (TextView)itemView.findViewById(R.id.tvTitle);
-                tvDescription = (TextView)itemView.findViewById(R.id.tvDescription);
-                ivLogo = (ImageView) itemView.findViewById(R.id.ivIcon);
-
-                itemView.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                launchApp(packageName);
-            }
-        }
     }
 }

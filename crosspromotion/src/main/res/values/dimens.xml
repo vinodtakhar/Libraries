@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="medium">8dp</dimen>
+    <dimen name="large">12dp</dimen>
+    <dimen name="small">4dp</dimen>
+
+    <dimen name="app_item_image_height">64dp</dimen>
 </resources>

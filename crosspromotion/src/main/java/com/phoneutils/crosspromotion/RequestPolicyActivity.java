@@ -42,7 +42,7 @@ public abstract class RequestPolicyActivity extends AppCompatActivity{
 
         tvTitle.setText("Welcome to "+getResources().getString(R.string.app_name));
 
-        String html = "<b>By Continuing You are Agree with <u><i>Terms and Conditions</i></u></b>";
+        String html = "<b>By Continuing You are Agree with <u><i>Privacy Policy and Terms and Conditions</i></u></b>";
 
         tvLink.setText(Html.fromHtml(html));
 

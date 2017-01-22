@@ -3,17 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:text="Try our other popular apps"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:id="@+id/tvMessage"
-        android:layout_height="wrap_content" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_below="@+id/tvMessage"
+    <LinearLayout
+        android:id="@+id/layout"
+        android:orientation="vertical"
         android:layout_above="@+id/btnExit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

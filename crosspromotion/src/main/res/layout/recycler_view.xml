@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/colorCardBackground"
+    android:layout_height="match_parent">
+    <TextView
+        style="@style/titleText.White"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/small"
+        android:layout_width="match_parent"
+        android:text="Try our other popular apps"
+        android:id="@+id/tvMessage"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/tvMessage"
+        android:layout_above="@+id/btnExit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
