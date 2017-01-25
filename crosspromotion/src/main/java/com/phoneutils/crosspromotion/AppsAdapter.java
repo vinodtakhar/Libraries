@@ -23,11 +23,13 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>{
     private Context context;
     private ArrayList<AppModel> apps = null;
     private int itemLayoutId;
+    private boolean showDescription = false;
 
-    public AppsAdapter(Context context,ArrayList<AppModel> apps,int itemLayoutId){
+    public AppsAdapter(Context context,ArrayList<AppModel> apps,int itemLayoutId,boolean showDescription){
         this.context = context;
         this.apps = apps;
         this.itemLayoutId = itemLayoutId;
+        this.showDescription = showDescription;
     }
 
     @Override
@@ -60,6 +62,8 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>{
             tvTitle = (TextView)itemView.findViewById(R.id.tvTitle);
             tvDescription = (TextView)itemView.findViewById(R.id.tvDescription);
             ivLogo = (ImageView) itemView.findViewById(R.id.ivIcon);
+
+            tvDescription.setVisibility(showDescription?View.VISIBLE:View.GONE);
 
             itemView.setOnClickListener(this);
         }

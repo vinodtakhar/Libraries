@@ -11,6 +11,8 @@
         android:xlargeScreens="true"
         android:smallScreens="true" />
 
+    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
+
     <application>
         <activity android:name=".PolicyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>

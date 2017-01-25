@@ -36,8 +36,13 @@ public class CrossFragment extends DialogFragment {
     private Button btnExit;
     private int column;
     private LinearLayout layout;
+    private boolean showDescription = false;
 
     public CrossFragment() {
+    }
+
+    public void setShowDescription(boolean showDescription) {
+        this.showDescription = showDescription;
     }
 
     public void setColumn(int column) {
@@ -62,6 +67,7 @@ public class CrossFragment extends DialogFragment {
 
         CrossAdView crossAdView = new CrossAdView(getContext());
         crossAdView.setColumn(column);
+        crossAdView.setShowDescription(showDescription);
         crossAdView.setOrientation(LinearLayoutManager.VERTICAL);
 
         if(!crossAdView.hasCrossAds()){
@@ -79,7 +85,7 @@ public class CrossFragment extends DialogFragment {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 
         Window window = getDialog().getWindow();
-        window.setLayout((int)(displayMetrics.widthPixels - displayMetrics.widthPixels*.20), (int)(displayMetrics.heightPixels-displayMetrics.heightPixels*.20));
+        window.setLayout((int)(displayMetrics.widthPixels - displayMetrics.widthPixels*.10), (int)(displayMetrics.heightPixels-displayMetrics.heightPixels*.10));
         window.setGravity(Gravity.CENTER);
     }
 

@@ -35,9 +35,11 @@ public class BaseActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private AdView mAdView;
     private boolean showCrossAds = false;
-    private boolean adOnBack = false;
     private int column;
     private boolean showCrossActivity = false;
+    private boolean showCrossAdDescription;
+    private Handler adLoadingTimeoutHandler;
+    private Runnable adLoadingTimeoutRunnable;
 
     public BaseActivity() {
     }
@@ -48,26 +50,56 @@ public class BaseActivity extends AppCompatActivity {
 
         this.setRequestedOrientation(getResources().getInteger(R.integer.activity_orientation));
 
-
         Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
+
+        adLoadingTimeoutHandler = new Handler(Looper.getMainLooper());
 
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getResources().getString(R.string.interstitial_id));
 
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
-            public void onAdClosed() {
-                requestNewInterstitial();
+            public void onAdLoaded() {
+                super.onAdLoaded();
+
+                cancelTimeoutHandler();
+
+                showFullAd();
             }
 
             @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-                onInterstitialLoaded();
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+
+                cancelTimeoutHandler();
             }
         });
 
-        requestNewInterstitial();
+        if(shouldShowAdOnLoad()) {
+            requestNewInterstitial();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        cancelTimeoutHandler();
+        super.onPause();
+    }
+
+    public boolean shouldShowAdOnLoad(){
+        return false;
+    }
+
+    public int getAdLoadingTimeout(){
+        return 7000;
+    }
+
+    public String getAdLoadingMessage(){
+        return "Loading...";
+    }
+
+    public void setShowCrossAdDescription(boolean showCrossAdDescription) {
+        this.showCrossAdDescription = showCrossAdDescription;
     }
 
     public void setShowCrossActivity(boolean showCrossActivity) {
@@ -84,35 +116,21 @@ public class BaseActivity extends AppCompatActivity {
         this.column = column;
     }
 
-    public void onInterstitialLoaded(){}
-
     private void showFullAd(){
-        if (mInterstitialAd.isLoaded()) {
-            mInterstitialAd.show();
-        }
+        mInterstitialAd.show();
     }
 
     protected void showInterstitial(){
-        showInterstitial("Loading...",1500);
+        requestNewInterstitial();
     }
 
-    protected void showInterstitial(String message){
-        showInterstitial(message,1500);
-    }
+    protected void showInterstitial(int showInEvery){
+        int counter = (int)AppPreferences.getLongSharedPreference(this,getClass().getName(),0);
 
-    protected void showInterstitial(int delayMillis){
-        showInterstitial("Loading...",delayMillis);
-    }
-
-    protected void showInterstitial(String message,int delayMillis){
-        showProgress(message);
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                hideProgress();
-                showFullAd();
-            }
-        },delayMillis);
+        if(counter%showInEvery==0) {
+            AppPreferences.setLongSharedPreference(this,getClass().getName(),counter+1);
+            requestNewInterstitial();
+        }
     }
 
     protected void initBanner() {
@@ -124,7 +142,29 @@ public class BaseActivity extends AppCompatActivity {
         mAdView.loadAd(adRequest);
     }
 
+    private void startTimeoutHandler(){
+        adLoadingTimeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                cancelTimeoutHandler();
+            }
+        };
+
+        adLoadingTimeoutHandler.postDelayed(adLoadingTimeoutRunnable,getAdLoadingTimeout());
+    }
+
+    private void cancelTimeoutHandler(){
+        hideProgress();
+
+        if(adLoadingTimeoutRunnable!=null){
+            adLoadingTimeoutHandler.removeCallbacks(adLoadingTimeoutRunnable);
+            adLoadingTimeoutRunnable = null;
+        }
+    }
+
     private void requestNewInterstitial() {
+        showProgress(getAdLoadingMessage());
+
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
                 .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
@@ -132,6 +172,8 @@ public class BaseActivity extends AppCompatActivity {
                 .build();
 
         mInterstitialAd.loadAd(adRequest);
+
+        startTimeoutHandler();
     }
 
     protected void requestPermission(int requestCode,String permission) {
@@ -213,25 +255,20 @@ public class BaseActivity extends AppCompatActivity {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
-
-    public void showAdOnBack(boolean adOnBack){
-        this.adOnBack = adOnBack;
-    }
     @Override
     public void onBackPressed() {
 
         boolean isJsonNull = AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null;
 
-        if(adOnBack){
-            adOnBack = false;
-            showInterstitial();
-        }else if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
+        if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
             if(showCrossActivity){
-                startActivity(new Intent(this,CrossAdActivity.class));
+                startActivity(new Intent(this,CrossAdActivity.class).putExtra(CrossAdActivity.EXTRA_COLUMN,column)
+                    .putExtra(CrossAdActivity.EXTRA_SHOW_DESCRIPTION,showCrossAdDescription));
                 this.finish();
             }else {
                 CrossFragment dFragment = new CrossFragment();
                 dFragment.setColumn(column);
+                dFragment.setShowDescription(showCrossAdDescription);
                 dFragment.show(getSupportFragmentManager(), "");
             }
         }else{

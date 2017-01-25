@@ -24,6 +24,7 @@ public class CrossAdView {
     private TextView tvTitle;
     private AppsAdapter appsAdapter;
     private ArrayList<AppModel> apps = null;
+    private boolean showDescription = false;
 
     private int orientation = LinearLayoutManager.VERTICAL;
 
@@ -45,6 +46,10 @@ public class CrossAdView {
         }else{
             apps = responseModel.getApps();
         }
+    }
+
+    public void setShowDescription(boolean showDescription) {
+        this.showDescription = showDescription;
     }
 
     public void setTitleVisibility(int visibility){
@@ -81,7 +86,7 @@ public class CrossAdView {
             recyclerView.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
             layoutId = R.layout.app_item_horizontal;
         }
-        appsAdapter = new AppsAdapter(context,apps,layoutId);
+        appsAdapter = new AppsAdapter(context,apps,layoutId,showDescription);
         recyclerView.setAdapter(appsAdapter);
 
         return view;

@@ -10,7 +10,11 @@ import android.widget.LinearLayout;
  */
 
 public class CrossAdActivity extends BaseActivity {
+    public static final String EXTRA_COLUMN = "extra_column";
+    public static final String EXTRA_SHOW_DESCRIPTION = "extra_show_description";
     private LinearLayout linearLayout;
+    private int column = 2;
+    private boolean showDescription = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +26,18 @@ public class CrossAdActivity extends BaseActivity {
 
         linearLayout = (LinearLayout)findViewById(R.id.layout);
 
+        if(getIntent()!=null){
+            if(getIntent().hasExtra(EXTRA_COLUMN)){
+                column = getIntent().getIntExtra(EXTRA_COLUMN, 2);
+            }
+            if(getIntent().hasExtra(EXTRA_SHOW_DESCRIPTION)){
+                showDescription = getIntent().getBooleanExtra(EXTRA_SHOW_DESCRIPTION,false);
+            }
+        }
+
         CrossAdView crossAdView = new CrossAdView(this);
-        crossAdView.setColumn(2);
+        crossAdView.setColumn(column);
+        crossAdView.setShowDescription(showDescription);
         crossAdView.setOrientation(LinearLayoutManager.VERTICAL);
 
         if(crossAdView.hasCrossAds()) {
