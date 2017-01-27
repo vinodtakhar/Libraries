@@ -125,12 +125,17 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void showInterstitial(int showInEvery){
-        int counter = (int)AppPreferences.getLongSharedPreference(this,getClass().getName(),0);
+        showInterstitial(getClass().getName(),showInEvery);
+    }
 
-        if(counter%showInEvery==0) {
-            AppPreferences.setLongSharedPreference(this,getClass().getName(),counter+1);
+    protected void showInterstitial(String tag,int showInEvery){
+        int counter = (int)AppPreferences.getLongSharedPreference(this,tag,0);
+
+        if(counter % showInEvery == 0) {
             requestNewInterstitial();
         }
+
+        AppPreferences.setLongSharedPreference(this,getClass().getName(),counter+1);
     }
 
     protected void initBanner() {
