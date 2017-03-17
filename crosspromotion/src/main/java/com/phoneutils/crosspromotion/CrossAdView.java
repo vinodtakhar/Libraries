@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -25,6 +26,11 @@ public class CrossAdView {
     private AppsAdapter appsAdapter;
     private ArrayList<AppModel> apps = null;
     private boolean showDescription = false;
+    private boolean autoScroll = false;
+    private int scrollInterval = 2000;
+    private int scrollCount = 1;
+
+    private Runnable autoScrollRunnable;
 
     private int orientation = LinearLayoutManager.VERTICAL;
 
@@ -89,6 +95,45 @@ public class CrossAdView {
         appsAdapter = new AppsAdapter(context,apps,layoutId,showDescription);
         recyclerView.setAdapter(appsAdapter);
 
+        if(isAutoScroll() && orientation == LinearLayoutManager.HORIZONTAL && apps!=null && apps.size()>0){
+            autoScrollRunnable = new Runnable() {
+                @Override
+                public void run() {
+//                    Toast.makeText(context,"scroll:"+scrollCount,Toast.LENGTH_LONG).show();
+                    LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                    layoutManager.setSmoothScrollbarEnabled(true);
+                    layoutManager.scrollToPosition(scrollCount++ %
+                            layoutManager.getItemCount());
+
+                    recyclerView.postDelayed(autoScrollRunnable,scrollInterval);
+                }
+            };
+
+            recyclerView.postDelayed(autoScrollRunnable,scrollInterval);
+        }
+
         return view;
+    }
+
+    public void onDestroy(){
+        if(autoScrollRunnable!=null){
+            recyclerView.removeCallbacks(autoScrollRunnable);
+        }
+    }
+
+    public boolean isAutoScroll() {
+        return autoScroll;
+    }
+
+    public void setAutoScroll(boolean autoScroll) {
+        this.autoScroll = autoScroll;
+    }
+
+    public int getScrollInterval() {
+        return scrollInterval;
+    }
+
+    public void setScrollInterval(int scrollInterval) {
+        this.scrollInterval = scrollInterval;
     }
 }

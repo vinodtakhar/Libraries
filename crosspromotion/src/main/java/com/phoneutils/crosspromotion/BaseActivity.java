@@ -62,9 +62,9 @@ public class BaseActivity extends AppCompatActivity {
             public void onAdLoaded() {
                 super.onAdLoaded();
 
-                cancelTimeoutHandler();
-
                 showFullAd();
+
+                cancelTimeoutHandler();
             }
 
             @Override
@@ -117,7 +117,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void showFullAd(){
-        mInterstitialAd.show();
+        if(adLoadingTimeoutRunnable!=null) {
+            mInterstitialAd.show();
+        }
     }
 
     protected void showInterstitial(){
@@ -135,7 +137,7 @@ public class BaseActivity extends AppCompatActivity {
             requestNewInterstitial();
         }
 
-        AppPreferences.setLongSharedPreference(this,getClass().getName(),counter+1);
+        AppPreferences.setLongSharedPreference(this,tag,counter+1);
     }
 
     protected void initBanner() {
@@ -143,6 +145,7 @@ public class BaseActivity extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
                 .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
+                .addTestDevice("F0D10D62E523166E0FD28927292F8A4F")
                 .addTestDevice("75BCE6A3D40329AA644B7DA2D7241198").build();
         mAdView.loadAd(adRequest);
     }
@@ -174,6 +177,7 @@ public class BaseActivity extends AppCompatActivity {
                 .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
                 .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
                 .addTestDevice("75BCE6A3D40329AA644B7DA2D7241198")
+                .addTestDevice("F0D10D62E523166E0FD28927292F8A4F")
                 .build();
 
         mInterstitialAd.loadAd(adRequest);
@@ -233,8 +237,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void hideProgress() {
-        if(progressDialog!=null && progressDialog.isShowing())
-            progressDialog.dismiss();
+        try {
+            if (progressDialog != null && progressDialog.isShowing())
+                progressDialog.dismiss();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     protected void showProgress(String s) {

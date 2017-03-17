@@ -10,6 +10,8 @@ import com.phoneutils.crosspromotion.CrossAdView;
 
 public class MainActivity extends BaseActivity {
 
+    CrossAdView crossAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,9 +23,16 @@ public class MainActivity extends BaseActivity {
         setShowCrossActivity(true);
         startLoader("http://theorycrosspromotion.appspot.com/getapps","main");
 
-        CrossAdView crossAdView = new CrossAdView(this);
+        crossAdView = new CrossAdView(this);
+        crossAdView.setAutoScroll(true);
         crossAdView.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         layout.addView(crossAdView.getView());
+    }
+
+    @Override
+    protected void onStop() {
+        crossAdView.onDestroy();
+        super.onStop();
     }
 }

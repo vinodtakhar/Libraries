@@ -15,7 +15,7 @@ ext {
     siteUrl = 'https://github.com/vinodtakhar/Libraries'
     gitUrl = 'https://github.com/vinodtakhar/Libraries.git'
 
-    libraryVersion = '2.0.8'
+    libraryVersion = '3.0.4'
 
     developerId = 'vinodtakhar'
     developerName = 'Vinod Takhar'
@@ -27,12 +27,12 @@ ext {
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 24
+        minSdkVersion 14
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
     }
@@ -45,12 +45,13 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:24.1.1'
-    compile 'com.google.android.gms:play-services-ads:9.4.0'
-    compile  'com.android.support:design:24.1.1'
+    compile 'com.android.support:appcompat-v7:25.0.1'
+
+    compile 'com.google.android.gms:play-services-ads:10.2.0'
+    compile  'com.android.support:design:25.0.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.android.support:cardview-v7:24.1.1'
+    compile 'com.android.support:cardview-v7:25.0.1'
 }
 
 apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
