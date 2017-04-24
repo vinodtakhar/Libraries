@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
  * Created by vinodtakhar on 22/01/17.
  */
 
-public class CrossAdActivity extends BaseActivity {
+public class CrossAdActivity extends OldBaseActivity {
     public static final String EXTRA_COLUMN = "extra_column";
     public static final String EXTRA_SHOW_DESCRIPTION = "extra_show_description";
     private LinearLayout linearLayout;

@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="string" name="interstitial_id"/>
-    <item type="string" name="rewarded_video_id"/>
     <item type="string" name="policy_url"/>
+    <item type="string" name="cross_url"/>
+
     <item type="string" name="app_name"/>
+
     <item type="integer" name="activity_orientation"/>
+
     <item type="id" name="adView"/>
+    <item type="id" name="nativeAdView"/>
+
     <item type="drawable" name="logo"/>
+
+    <item type="string" name="ad_native_unit_id"/>
+    <item type="string" name="ad_native_advance_unit_id"/>
+    <item type="string" name="ad_interstitial_unit_id"/>
+    <item type="string" name="ad_banner_unit_id"/>
+    <item type="string" name="ad_rewarded_video_unit_id"/>
+
+    <item type="string" name="ad_app_id"/>
 </resources>

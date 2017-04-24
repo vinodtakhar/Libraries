@@ -29,3 +29,16 @@
 -dontwarn com.google.gson.**
 
 -keep class com.phoneutils.crosspromotion.** { *; }
+
+
+#adcolony
+# For communication with AdColony's WebView
+-keepclassmembers class * {
+    @android.webkit.JavascriptInterface <methods>;
+}
+# For removing warnings due to lack of Multi-Window support
+-dontwarn android.app.Activity
+
+-ignorewarnings
+
+-keep class com.jirbo.adcolony.** { *; }

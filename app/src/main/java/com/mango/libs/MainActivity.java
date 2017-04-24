@@ -1,14 +1,14 @@
 package com.mango.libs;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.phoneutils.crosspromotion.BaseActivity;
 import com.phoneutils.crosspromotion.CrossAdView;
+import com.phoneutils.crosspromotion.OldBaseActivity;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends OldBaseActivity {
 
     CrossAdView crossAdView;
 
@@ -28,7 +28,10 @@ public class MainActivity extends BaseActivity {
         crossAdView.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         layout.addView(crossAdView.getView());
+
+        findViewById(R.id.btn).setVisibility(View.VISIBLE);
     }
+
 
     @Override
     protected void onStop() {

@@ -8,6 +8,8 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,34 +17,31 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.MemoryCategory;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 /**
- * Created by vinodtakhar on 22/04/17.
+ * Created by vinodtakhar on 28/4/16.
  */
-
-public class BaseActivity extends AppCompatActivity {
+public class OldBaseActivity extends AppCompatActivity {
 
     private static final int PERMISSIONS_REQUEST_CODE = 100;
-
-    private static final String TAG = BaseActivity.class.getName();
-
+    private static final String TAG = OldBaseActivity.class.getName();
     private String permissionBeingAsked;
     private int clientRequestCode;
-
+    private InterstitialAd mInterstitialAd;
     private ProgressDialog progressDialog;
-
+    private AdView mAdView;
     private boolean showCrossAds = false;
-
     private int column;
-
     private boolean showCrossActivity = false;
-
     private boolean showCrossAdDescription;
+    private Handler adLoadingTimeoutHandler;
+    private Runnable adLoadingTimeoutRunnable;
 
-    private boolean isActivityPaused = false;
-
-    public boolean isActivityPaused() {
-        return isActivityPaused;
+    public OldBaseActivity() {
     }
 
     @Override
@@ -52,6 +51,51 @@ public class BaseActivity extends AppCompatActivity {
         this.setRequestedOrientation(getResources().getInteger(R.integer.activity_orientation));
 
         Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
+
+        adLoadingTimeoutHandler = new Handler(Looper.getMainLooper());
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getResources().getString(R.string.ad_interstitial_unit_id));
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+
+                showFullAd();
+
+                cancelTimeoutHandler();
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+
+                cancelTimeoutHandler();
+            }
+        });
+
+        if(shouldShowAdOnLoad()) {
+            requestNewInterstitial();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        cancelTimeoutHandler();
+        super.onPause();
+    }
+
+    public boolean shouldShowAdOnLoad(){
+        return false;
+    }
+
+    public int getAdLoadingTimeout(){
+        return 7000;
+    }
+
+    public String getAdLoadingMessage(){
+        return "Loading...";
     }
 
     public void setShowCrossAdDescription(boolean showCrossAdDescription) {
@@ -64,12 +108,81 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void setShowCrossAds(boolean showCrossAds){
         this.showCrossAds = showCrossAds;
-        column = getResources().getInteger(com.phoneutils.crosspromotion.R.integer.activity_orientation)== ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE? 3:2;
+        column = getResources().getInteger(R.integer.activity_orientation)==ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE? 3:2;
     }
 
     protected void setShowCrossAds(boolean showCrossAds,int column){
         this.showCrossAds = showCrossAds;
         this.column = column;
+    }
+
+    private void showFullAd(){
+        if(adLoadingTimeoutRunnable!=null) {
+            mInterstitialAd.show();
+        }
+    }
+
+    protected void showInterstitial(){
+        requestNewInterstitial();
+    }
+
+    protected void showInterstitial(int showInEvery){
+        showInterstitial(getClass().getName(),showInEvery);
+    }
+
+    protected void showInterstitial(String tag,int showInEvery){
+        int counter = (int)AppPreferences.getLongSharedPreference(this,tag,0);
+
+        if(counter % showInEvery == 0) {
+            requestNewInterstitial();
+        }
+
+        AppPreferences.setLongSharedPreference(this,tag,counter+1);
+    }
+
+    protected void initBanner() {
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
+                .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
+                .addTestDevice("F0D10D62E523166E0FD28927292F8A4F")
+                .addTestDevice("75BCE6A3D40329AA644B7DA2D7241198").build();
+        mAdView.loadAd(adRequest);
+    }
+
+    private void startTimeoutHandler(){
+        adLoadingTimeoutRunnable = new Runnable() {
+            @Override
+            public void run() {
+                cancelTimeoutHandler();
+            }
+        };
+
+        adLoadingTimeoutHandler.postDelayed(adLoadingTimeoutRunnable,getAdLoadingTimeout());
+    }
+
+    private void cancelTimeoutHandler(){
+        hideProgress();
+
+        if(adLoadingTimeoutRunnable!=null){
+            adLoadingTimeoutHandler.removeCallbacks(adLoadingTimeoutRunnable);
+            adLoadingTimeoutRunnable = null;
+        }
+    }
+
+    private void requestNewInterstitial() {
+        showProgress(getAdLoadingMessage());
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("DC7C9FD46CD1CA86196555FA421470F7")
+                .addTestDevice("7E97A11C1B1F4804F656ED363496314B")
+                .addTestDevice("75BCE6A3D40329AA644B7DA2D7241198")
+                .addTestDevice("F0D10D62E523166E0FD28927292F8A4F")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
+
+        startTimeoutHandler();
     }
 
     protected void requestPermission(int requestCode,String permission) {
@@ -91,7 +204,7 @@ public class BaseActivity extends AppCompatActivity {
 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Utility.openAppSettings(BaseActivity.this);
+                            Utility.openAppSettings(OldBaseActivity.this);
                         }
                     });
             } else {
@@ -137,12 +250,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void startLoader(String url, String category){
-        AppPreferences.setSharedPreference(this, AppPreferences.KEY_URL,url);
-        AppPreferences.setSharedPreference(this, AppPreferences.KEY_CATEGORY,category);
+        AppPreferences.setSharedPreference(this,AppPreferences.KEY_URL,url);
+        AppPreferences.setSharedPreference(this,AppPreferences.KEY_CATEGORY,category);
 
         if(Utility.isConnected(this)){
-            boolean isJsonNull = AppPreferences.getSharedPreference(this, AppPreferences.KEY_APPS_JSON)==null;
-            boolean isItOneWeek = (AppPreferences.getLongSharedPreference(this, AppPreferences.KEY_LAST_SYNC_TIME,0l) + (AlarmManager.INTERVAL_DAY * 7))<= System.currentTimeMillis();
+            boolean isJsonNull = AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null;
+            boolean isItOneWeek = (AppPreferences.getLongSharedPreference(this,AppPreferences.KEY_LAST_SYNC_TIME,0l) + (AlarmManager.INTERVAL_DAY * 7))<= System.currentTimeMillis();
 
             if(isJsonNull ||
                     isItOneWeek){
@@ -158,12 +271,12 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        boolean isJsonNull = AppPreferences.getSharedPreference(this, AppPreferences.KEY_APPS_JSON)==null;
+        boolean isJsonNull = AppPreferences.getSharedPreference(this,AppPreferences.KEY_APPS_JSON)==null;
 
         if(showCrossAds && Utility.isConnected(this) && !isJsonNull) {
             if(showCrossActivity){
                 startActivity(new Intent(this,CrossAdActivity.class).putExtra(CrossAdActivity.EXTRA_COLUMN,column)
-                        .putExtra(CrossAdActivity.EXTRA_SHOW_DESCRIPTION,showCrossAdDescription));
+                    .putExtra(CrossAdActivity.EXTRA_SHOW_DESCRIPTION,showCrossAdDescription));
                 this.finish();
             }else {
                 CrossFragment dFragment = new CrossFragment();
@@ -175,19 +288,4 @@ public class BaseActivity extends AppCompatActivity {
             this.finish();
         }
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        isActivityPaused = true;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        isActivityPaused = false;
-    }
 }
-

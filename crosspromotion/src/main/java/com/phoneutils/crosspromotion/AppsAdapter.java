@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,6 +45,14 @@ public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>{
         holder.tvDescription.setText(apps.get(position).getDescription());
         Glide.with(context).load(apps.get(position).getLogo()).override(600,200).into(holder.ivLogo);
         holder.packageName = apps.get(position).getPackageName();
+
+        if(context.getResources().getString(R.string.show_cross_app_animation).equals("YES")) {
+            Animation scaleAnim = AnimationUtils.loadAnimation(context, R.anim.bounce);
+            scaleAnim.setRepeatCount(-1);
+            scaleAnim.setRepeatMode(2);
+            holder.itemView.clearAnimation();
+            holder.itemView.startAnimation(scaleAnim);
+        }
     }
 
     @Override

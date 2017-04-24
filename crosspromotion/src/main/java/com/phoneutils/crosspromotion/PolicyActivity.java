@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
  * @since 20/12/16
  */
 
-public class PolicyActivity extends BaseActivity {
+public class PolicyActivity extends OldBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">#000044</color>
     <color name="colorAccent">#000044</color>
 
+    <color name="color1">#1b63a0</color>
+    <color name="color2">#e57331</color>
+    <color name="color3">#3aa5a5</color>
+
     <color name="colorCardBackground">#EBEDEF</color>
 </resources>
