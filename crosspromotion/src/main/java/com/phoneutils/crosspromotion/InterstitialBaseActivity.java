@@ -1,5 +1,6 @@
 package com.phoneutils.crosspromotion;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -84,8 +85,11 @@ public class InterstitialBaseActivity extends RewardedVideoBaseActivity{
         return true;
     }
 
+    private boolean isInterstitialAdLoaded(){
+        return mInterstitialAd != null && mInterstitialAd.isLoaded();
+    }
     private void showInterstitialAd(boolean showLoadingBeforeAd){
-        if(mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+        if(isInterstitialAdLoaded()) {
             if(!showLoadingBeforeAd) {
                 mInterstitialAd.show();
             }else{
@@ -123,6 +127,16 @@ public class InterstitialBaseActivity extends RewardedVideoBaseActivity{
         }
         AppPreferences.setLongSharedPreference(this,tag,counter+1);
     }
+
+//    protected void showInterstitial(final String tag,final int showInEvery,final Intent intentToLaunch){
+//        int counter = (int) AppPreferences.getLongSharedPreference(this,tag,0);
+//        if(counter % showInEvery == 0 && isInterstitialAdLoaded()) {
+//
+//        }else{
+//            context.sta
+//        }
+//        AppPreferences.setLongSharedPreference(this,tag,counter+1);
+//    }
 
     private void startLoadingAndShow(){
         showProgress(loadingMessage);

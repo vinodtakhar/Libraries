@@ -86,6 +86,7 @@ public abstract class NativeAdCursorAdapter<VH extends NativeAdCursorAdapter.Vie
     public void onBindViewHolder(VH holder, int position) {
         if(!(holder instanceof NativeExpressAdViewHolder)){
             Log.e(TAG,"Not an NativeAdView");
+            super.onBindViewHolder(holder,getNormalViewPosition(position));
             return;
         }
 
@@ -134,7 +135,9 @@ public abstract class NativeAdCursorAdapter<VH extends NativeAdCursorAdapter.Vie
             addNativeExpressAds(adCount);
         }
 
-        return super.getCount() + adCount;
+        int totalCount  = super.getCount() + adCount;
+
+        return totalCount;
     }
 
     @Override

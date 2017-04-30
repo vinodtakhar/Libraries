@@ -23,7 +23,7 @@ ext {
     siteUrl = 'https://github.com/vinodtakhar/Libraries'
     gitUrl = 'https://github.com/vinodtakhar/Libraries.git'
 
-    libraryVersion = '3.1.2'
+    libraryVersion = '3.1.3'
 
     developerId = 'vinodtakhar'
     developerName = 'Vinod Takhar'
@@ -36,7 +36,7 @@ ext {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 14
@@ -48,13 +48,13 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.3.1'
 
-    compile 'com.google.android.gms:play-services-ads:10.2.1'
-    compile  'com.android.support:design:25.0.1'
+    compile 'com.google.android.gms:play-services-ads:10.2.4'
+    compile  'com.android.support:design:25.3.1'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.code.gson:gson:2.2.4'
-    compile 'com.android.support:cardview-v7:25.0.1'
+    compile 'com.android.support:cardview-v7:25.3.1'
 
 //    compile 'com.adcolony:sdk:3.1.0'
 //    compile 'com.google.ads.mediation:adcolony:3.0.6.0'
